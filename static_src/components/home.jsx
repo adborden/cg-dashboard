@@ -13,13 +13,13 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
-        <div className={ this.styler('usa-grid') }>
+        <div className={ this.styler('cg-grid') }>
           <h2>Dashboard</h2>
           <p>This Dashboard is a good way to get an overview of your organizations, spaces, and applications. For full management and deployment of applications, use the <a href="https://docs.cloud.gov/getting-started/setup/">command line interface</a>.
           </p>
 
           <h3 style={ {marginBottom: '0.5rem' }}>Cheatsheet</h3>
-          <section className={ this.styler('usa-width-one-half') }>
+          <section className={ this.styler('cg-width-6') }>
             <h4>A few things you can do here</h4>
             <ul>
               <li>See information about your orgs, spaces, and apps.</li>
@@ -27,7 +27,7 @@ export default class Home extends React.Component {
               <li>Create service instances for your spaces.</li>
             </ul>
           </section>
-          <section className={ this.styler('usa-width-one-half') }
+          <section className={ this.styler('cg-width-6') }
             style={{ width: '45.82117%' }}>
             <h4>Basic cloud.gov structure</h4>
             <ul>
@@ -39,7 +39,7 @@ export default class Home extends React.Component {
               </li>
             </ul>
           </section>
-          <section className={ this.styler('usa-width-one-half') }
+          <section className={ this.styler('cg-width-6') }
             style={{marginTop: '-4rem'}}>
             <h4>Looking at an empty sandbox?</h4>
             <p><a href="https://docs.cloud.gov/getting-started/your-first-deploy/">Try making a “hello world” app</a>.</p>
