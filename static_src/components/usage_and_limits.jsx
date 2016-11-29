@@ -9,11 +9,12 @@ import PanelBlock from './panel_block.jsx';
 import PanelRow from './panel_row.jsx';
 import ResourceUsage from './resource_usage.jsx';
 
+import appActions from '../actions/app_actions.js';
 import createStyler from '../util/create_styler';
 
 function stateSetter(props) {
   return {
-    editable: !!props.editable
+    isEditing: !!props.isEditing
   };
 }
 
@@ -24,11 +25,12 @@ export default class UsageAndLimits extends React.Component {
     this.styler = createStyler(style);
     this.state = stateSetter(props);
     this.getStat = this.getStat.bind(this);
+    this._onSubmit = this._onSubmit.bind(this);
     this._onToggleEdit = this._onToggleEdit.bind(this);
   }
 
   _onToggleEdit() {
-    this.setState(stateSetter({ editable: !this.state.editable }));
+    this.setState(stateSetter({ isEditing: !this.state.isEditing }));
   }
 
   getStat(statName) {
@@ -55,7 +57,7 @@ export default class UsageAndLimits extends React.Component {
       </div>
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left'}}>
         <ResourceUsage title="Instance disk"
-          editable={ this.state.editable }
+          editable={ this.state.isEditing }
           name="disk"
           amountTotal={ this.getStat('disk_quota') }
         />
@@ -75,7 +77,7 @@ export default class UsageAndLimits extends React.Component {
       </div>
       <div className={ this.styler('panel-column') } style={{ textAlign: 'left'}}>
         <ResourceUsage title="Instance memory"
-          editable={ this.state.editable }
+          editable={ this.state.isEditing }
           name="memory"
           amountTotal={ this.getStat('mem_quota') }
         />
@@ -122,8 +124,30 @@ export default class UsageAndLimits extends React.Component {
     );
   }
 
+  _onSubmit() {
+    appActions.updateApp(this.app.guid, {});
+  }
+
   render() {
     let content = <div></div>;
+    let controls = (
+        <Action style="primary" type="outline" label="Modify allocation and scale" clickHandler={ this._onToggleEdit }>
+          <span>Modify allocation and scale</span>
+        </Action>
+    );
+
+    if (this.state.isEditing) {
+      controls = (
+        <div>
+          <Action style="primary" type="outline" label="OK" clickHandler={ this._onSubmit }>
+            <span>OK</span>
+          </Action>
+          <Action style="primary" type="outline" label="Cancel" clickHandler={ this._onToggleEdit }>
+            <span>Cancel</span>
+          </Action>
+        </div>
+      );
+    }
 
     if (this.props.app) {
       content = (
@@ -151,9 +175,7 @@ export default class UsageAndLimits extends React.Component {
             </PanelRow>
           </PanelGroup>
         </PanelGroup>
-        <Action style="primary" type="outline" label="Modify allocation and scale" clickHandler={ this._onToggleEdit }>
-          <span>Modify allocation and scale</span>
-        </Action>
+        { controls }
       </div>
       );
     }
