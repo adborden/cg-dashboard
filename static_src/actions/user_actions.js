@@ -189,13 +189,12 @@ const userActions = {
       return Promise.reject(new Error('userGuid is required'));
     }
 
-    // These are optional for filtering
-    const { orgGuid, spaceGuid } = options;
+    // orgGuid s optional for filtering
+    const { orgGuid } = options;
     AppDispatcher.handleViewAction({
       type: userActionTypes.USER_SPACES_FETCH,
       userGuid,
-      orgGuid,
-      spaceGuid
+      orgGuid
     });
 
     return cfApi.fetchUserSpaces(userGuid, options)
@@ -203,14 +202,13 @@ const userActions = {
   },
 
   // Optionally specify orgGuid if filtered for spaces belonging to orgGuid
-  receivedUserSpaces(userGuid, userSpaces, options) {
-    const { orgGuid, spaceGuid } = options;
+  receivedUserSpaces(userGuid, userSpaces, options = {}) {
+    const { orgGuid } = options;
     AppDispatcher.handleServerAction({
       type: userActionTypes.USER_SPACES_RECEIVED,
       userGuid,
       userSpaces,
-      orgGuid,
-      spaceGuid
+      orgGuid
     });
 
     return Promise.resolve(userSpaces);

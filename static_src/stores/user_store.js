@@ -25,7 +25,7 @@ const resourceToRole = {
   }
 };
 
-class UserStore extends BaseStore {
+export class UserStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
@@ -231,8 +231,11 @@ class UserStore extends BaseStore {
         }
 
         const updatedRoles = action.userSpaces.reduce((roles, userSpace) => {
-          const key = this._userRoleKey(action.userGuid, userSpace.guid);
+          const key = userSpace.guid;
           // TODO this would be nice if it was an immutable Set
+          // We don't check for duplicates, we just continually append.  We're
+          // assuming guids are unique between entity types, so user.roles
+          // could contain roles for orgs too.
           const spaceRoles = roles[key] || [];
           roles[key] = spaceRoles.concat(['space_developer']); // eslint-disable-line
           return roles;
@@ -265,10 +268,6 @@ class UserStore extends BaseStore {
       default:
         break;
     }
-  }
-
-  _userRoleKey(userGuid, entityGuid) {
-    return `${entityGuid}|${userGuid}`;
   }
 
   /**
@@ -324,7 +323,7 @@ class UserStore extends BaseStore {
   }
 
   hasRole(userGuid, entityGuid, role) {
-    const key = this._userRoleKey(userGuid, entityGuid);
+    const key = entityGuid;
     const user = this.get(userGuid);
     const roles = user && user.roles && user.roles[key] || [];
     return roles.includes(role);
