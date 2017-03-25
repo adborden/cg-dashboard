@@ -33,6 +33,7 @@ class UserStore extends BaseStore {
     this._currentViewedType = 'space_users';
     this._currentUserGuid = null;
     this._error = null;
+    this._loading = {};
   }
 
   _registerToActions(action) {
@@ -223,6 +224,36 @@ class UserStore extends BaseStore {
         break;
       }
 
+      case userActionTypes.USER_SPACES_RECEIVED: {
+        const user = this.get(action.userGuid);
+        if (!user) {
+          break;
+        }
+
+        const updatedRoles = action.userSpaces.reduce((roles, userSpace) => {
+          const key = this._userRoleKey(action.userGuid, userSpace.guid);
+          // TODO this would be nice if it was an immutable Set
+          const spaceRoles = roles[key] || [];
+          roles[key] = spaceRoles.concat(['space_developer']); // eslint-disable-line
+          return roles;
+        }, user.roles || {});
+
+        this.merge('guid', { guid: user.guid, roles: updatedRoles });
+        break;
+      }
+
+      case userActionTypes.CURRENT_USER_FETCH: {
+        this._loading.currentUser = true;
+        this.emitChange();
+        break;
+      }
+
+      case userActionTypes.CURRENT_USER_RECEIVED: {
+        this._loading.currentUser = false;
+        this.emitChange();
+        break;
+      }
+
       case userActionTypes.USER_CHANGE_VIEWED_TYPE: {
         if (this._currentViewedType !== action.userType) {
           this._currentViewedType = action.userType;
@@ -234,6 +265,10 @@ class UserStore extends BaseStore {
       default:
         break;
     }
+  }
+
+  _userRoleKey(userGuid, entityGuid) {
+    return `${entityGuid}|${userGuid}`;
   }
 
   /**
@@ -269,6 +304,10 @@ class UserStore extends BaseStore {
     return this._currentViewedType;
   }
 
+  get isLoadingCurrentUser() {
+    return this._loading.currentUser === true;
+  }
+
   _hasRole(roleToCheck, userType) {
     const user = this.currentUser;
     if (!user) return false;
@@ -282,6 +321,13 @@ class UserStore extends BaseStore {
 
   currentUserHasOrgRole(role) {
     return this._hasRole(role, 'organization_roles');
+  }
+
+  hasRole(userGuid, entityGuid, role) {
+    const key = this._userRoleKey(userGuid, entityGuid);
+    const user = this.get(userGuid);
+    const roles = user && user.roles && user.roles[key] || [];
+    return roles.includes(role);
   }
 
   get currentUser() {
