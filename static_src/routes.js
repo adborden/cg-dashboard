@@ -27,12 +27,14 @@ import userActions from './actions/user_actions.js';
 
 // TODO this is hard to stub since we query it at module load time. It should
 // be passed in or something.
-const mainEl = document.querySelector('.js-app');
+function mainEl() {
+  return document.querySelector('.js-app');
+}
 
 const MAX_OVERVIEW_SPACES = 10;
 
 export function login(next) {
-  ReactDOM.render(<MainContainer><Login /></MainContainer>, mainEl);
+  ReactDOM.render(<MainContainer><Login /></MainContainer>, mainEl());
   next();
 }
 
@@ -59,7 +61,7 @@ export function overview(next) {
 
   ReactDOM.render(<MainContainer>
     <Overview />
-  </MainContainer>, mainEl);
+  </MainContainer>, mainEl());
 
   next();
 }
@@ -78,7 +80,7 @@ export function org(orgGuid, next) {
   ReactDOM.render(
     <MainContainer>
       <OrgContainer />
-    </MainContainer>, mainEl);
+    </MainContainer>, mainEl());
 
   next();
 }
@@ -102,7 +104,7 @@ export function space(orgGuid, spaceGuid, next) {
       <SpaceContainer
         currentPage="apps"
       />
-    </MainContainer>, mainEl);
+    </MainContainer>, mainEl());
   next();
 }
 
@@ -128,7 +130,7 @@ export function app(orgGuid, spaceGuid, appGuid, next) {
   ReactDOM.render(
     <MainContainer>
       <AppContainer />
-    </MainContainer>, mainEl);
+    </MainContainer>, mainEl());
   next();
 }
 
@@ -161,16 +163,16 @@ export function checkAuth(...args) {
 
       // The user is Unauthenicated. We could redirect to a home page where
       // user could click login but since we don't have any such page, just
-      // start the login flow by redirecting to /handshake. This is as if they
+      // start the login flow by redirecting to /auth/login. This is as if they
       // had clicked login.
-      windowUtil.redirect('/handshake');
+      windowUtil.redirect('/auth/login');
 
       // Just in case something goes wrong, don't leave the user hanging. Show
       // a delayed loading indicator to give them a hint. Hopefully the
       // redirect is quick and they never see the loader.
       ReactDOM.render(
         <Loading text="Redirecting to login" loadingDelayMS={ 3000 } style="inline" />
-      , mainEl);
+      , mainEl());
 
       // Stop the routing
       next(false);
@@ -199,7 +201,7 @@ export function notFound(next) {
   spaceActions.changeCurrentSpace();
   appActions.changeCurrentApp();
 
-  ReactDOM.render(<h1>Not Found</h1>, mainEl);
+  ReactDOM.render(<h1>Not Found</h1>, mainEl());
   next();
 }
 

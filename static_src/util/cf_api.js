@@ -7,7 +7,7 @@ import quotaActions from '../actions/quota_actions.js';
 import routeActions from '../actions/route_actions.js';
 import userActions from '../actions/user_actions.js';
 
-const APIV = '/v2';
+const APIV = '/api';
 
 
 // An error from the CF v2 API

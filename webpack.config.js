@@ -5,6 +5,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackKarmaWarningsPlugin = require(
   './static_src/test/webpack-karma-warnings-plugin.js');
 
+const nodeExternals = require('webpack-node-externals');
+
 const PRODUCTION = (process.env.NODE_ENV === 'prod');
 const TEST = (process.env.NODE_ENV === 'test');
 const CG_STYLE_PATH = process.env.CG_STYLE_PATH;
@@ -112,5 +114,6 @@ if (PRODUCTION) {
       'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]')
   );
 }
+
 
 module.exports = config;

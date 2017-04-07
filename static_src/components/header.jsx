@@ -25,7 +25,7 @@ export default class Header extends React.Component {
     const loggedIn = LoginStore.isLoggedIn();
     let loginLink = (!loggedIn) ?
     <HeaderLink>
-      <Action href="/handshake" label="Login" type="outline">
+      <Action href="/auth/login" label="Login" type="outline">
         Login
       </Action>
     </HeaderLink> :
